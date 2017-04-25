@@ -320,6 +320,10 @@ class Crud(Gtk.Window):
       if self.air_list[i].id_exist(del_value):
         del self.air_list[i]
         break
+    ln2 = len(self.fl_list)
+    for i in range(ln2):
+      if self.fl_list[i].origin == del_value or self.fl_list[i].destination == del_value:
+        del self.fl_list[i]
     self.update_boxes()
     print self.air_list
 
