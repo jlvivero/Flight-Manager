@@ -9,6 +9,7 @@ class Prolog_manager(object):
     self.Path = Variable()
     self.Cost = Variable()
     self.assertz = Functor("assertz",1)
+    self.retract = Functor("retract",1)
     self.vuelos = Functor("vuelos",5)
     self.edge = Functor("edge",3)
     self.prolog = Prolog()
@@ -16,6 +17,9 @@ class Prolog_manager(object):
 
   def add_flight(self, origin, destination, cost):
     call(self.assertz(self.edge(origin,destination,cost)))
+
+  def delete_flight(self,origin,destination,cost):
+    call(self.retract(self.edge(origin,destination,cost)))
 
   def query_flight_with_scale(self, origin, destination, scales):
     q = Query(self.vuelos(origin,destination,scales,self.Path,self.Cost))
@@ -26,6 +30,7 @@ class Prolog_manager(object):
       flight.path_list = [node.chars for node in self.Path.value]
       flight.cost = self.Cost.value
       flight_list.append(flight)
+    q.closeQuery()
     return flight_list
 
   def query_flight_any_scale(self, origin, destination):
@@ -37,4 +42,5 @@ class Prolog_manager(object):
       flight.path_list = [node.chars for node in self.Path.value]
       flight.cost = self.Cost.value
       flight_list.append(flight)
+    q.closeQuery()
     return flight_list

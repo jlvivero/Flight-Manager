@@ -21,6 +21,7 @@ class Queries(Gtk.Window):
     self.empty = Gtk.Label(" ")
     self.empty2 = Gtk.Label("write -1 to show all the layovers")
     self.empty3 = Gtk.Label(" ")
+    self.manager = Prolog_manager("vuelos2")
 
     self.origin_label = Gtk.Label("Origin")
     self.destination_label = Gtk.Label("Destination")
@@ -83,21 +84,22 @@ class Queries(Gtk.Window):
         print("Entered: %s" % entry.get_text())
 
   def start_query(self,widget):
-    manager = Prolog_manager("vuelos2")
     origin_id = self.origin[0]
     destination_id = self.destination[0]
     other_flight = []
 
     #add all the current existing flights to prolog
     for i in self.flights:
-      manager.add_flight(i.origin,i.destination, i.cost)
+      self.manager.add_flight(i.origin,i.destination, i.cost)
 
     #TODO: validate that this is an integer
     layover = int(self.layover_entry.get_text())
     if layover >= 0 and layover <= 3:
-      other_flight = manager.query_flight_with_scale(origin_id,destination_id,layover)
+      other_flight = self.manager.query_flight_with_scale(origin_id,destination_id,layover)
     else:
-      other_flight = manager.query_flight_any_scale(origin_id,destination_id)
+      other_flight = self.manager.query_flight_any_scale(origin_id,destination_id)
+    for i in self.flights:
+      self.manager.delete_flight(i.origin,i.destination,i.cost)
     self.populate_answer(other_flight)
 
   def populate_combo(self, lst):
@@ -113,8 +115,10 @@ class Queries(Gtk.Window):
     return temp
 
   def populate_answer(self, flight_object):
+    print "omg"
     answer = ""
     for i in flight_object:
+      print "lets see"
       answer = answer + "path: " + str(i.path_list) + "total cost: " + str(i.cost) + "scale number: " + str(i.scale_number) + "\n"
     print answer
     self.result_label = Gtk.Label(answer)
