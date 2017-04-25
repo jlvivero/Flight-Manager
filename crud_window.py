@@ -15,6 +15,7 @@ class Crud(Gtk.Window):
     self.destination = None
     self.delete_value = None
     self.mod_value = None
+    self.flight_value = None
     self.set_size_request(800,600)
     self.set_border_width(5)
     self.grid = Gtk.Grid()
@@ -210,6 +211,7 @@ class Crud(Gtk.Window):
     if tree_iter != None:
         model = combo.get_model()
         name = model[tree_iter][0]
+        self.flight_value = name
         print("Selected: name=%s" % (name))
     else:
         entry = combo.get_child()
@@ -220,6 +222,7 @@ class Crud(Gtk.Window):
     if tree_iter != None:
         model = combo.get_model()
         name = model[tree_iter][0]
+        self.flight_value = name
         print("Selected: name=%s" % (name))
     else:
         entry = combo.get_child()
@@ -341,22 +344,20 @@ class Crud(Gtk.Window):
     print self.fl_list
 
   def flight_mod(self):
-    fake_flight_id = "mxl-sd"
     #TODO: validate that the cost is a number
     new_cost = int(self.mod_cost.get_text())
     ln = len(self.fl_list)
     for i in range(ln):
-      if self.ln_list[i].id_exist(fake_flight_id):
-        self.ln_list[i].change_off_value(new_cost)
+      if self.fl_list[i].id_exist(self.flight_value):
+        self.fl_list[i].change_off_value(new_cost)
         break
     self.update_boxes()
     print self.fl_list
 
   def flight_del(self):
-    fake_val = "mxl-sd"
     ln = len(self.fl_list)
     for i in range(ln):
-      if self.fl_list[i].id_exist(fake_val):
+      if self.fl_list[i].id_exist(self.flight_value):
         del self.fl_list[i]
         break
     self.update_boxes()
