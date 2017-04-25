@@ -26,6 +26,7 @@ class Prolog_manager(object):
     flight = Flight()
     flight_list = []
     while q.nextSolution():
+      flight = Flight()
       flight.scale_number = scales
       flight.path_list = [node.chars for node in self.Path.value]
       flight.cost = self.Cost.value
@@ -37,7 +38,9 @@ class Prolog_manager(object):
     q = Query(self.vuelos(origin,destination,self.Scales,self.Path,self.Cost))
     flight = Flight()
     flight_list = []
+    i = 0
     while q.nextSolution():
+      flight = Flight()
       flight.scale_number = self.Scales.value
       flight.path_list = [node.chars for node in self.Path.value]
       flight.cost = self.Cost.value
