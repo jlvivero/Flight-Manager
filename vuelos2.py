@@ -19,7 +19,7 @@ class Prolog_manager(object):
 
   def query_flight_with_scale(self, origin, destination, scales):
     call(self.assertz(self.edge(origin, destination, scales, self.Path, self.Cost)))
-    flight = Flight() #TODO: implement FLIGHT class
+    flight = Flight()
     flight_list = []
     while q.nextSolution():
       flight.scale_number = scales

@@ -53,14 +53,9 @@ class welcome_screen(Gtk.Window):
     #win.destroy()
 
   def search(self, widget):
-    #TODO make a search window
-    pass
-
-  def make_window(self,widget,something):
-    win = welcome_screen()
-    win.connect("delete-event", Gtk.main_quit)
-    win.show_all()
-    Gtk.main()
+    search_window = Queries()
+    search_window.connect("delete-event", Gtk.main)
+    search_window.show_all()
 
 win = welcome_screen()
 win.connect("delete-event", Gtk.main_quit)

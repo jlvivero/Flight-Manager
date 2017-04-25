@@ -16,6 +16,7 @@ class Crud(Gtk.Window):
     else:
       self.context = "Flight Crud"
 
+    #TODO: fill lists with actual values
     ######################airport stuff#########################################
     #airport add
     self.airport_id_label = Gtk.Label("ID")
@@ -72,8 +73,7 @@ class Crud(Gtk.Window):
     self.flight_list = Gtk.ListStore(str)
     self.flight_list.append(["mxl-pnm"])
     self.flight_list.append(["pnm-mxl"])
-    #self.flight_list.append(["mxl-pnm","mxl-pnm"])
-    #self.flight_list.append(["pnm-mxl","pnm-mxl"])
+
     self.flight_combo_box = Gtk.ComboBox.new_with_model_and_entry(self.flight_list)
     self.flight_combo_box.connect("changed", self.flight_change)
     self.flight_combo_box.set_entry_text_column(0)
@@ -107,10 +107,9 @@ class Crud(Gtk.Window):
     self.grid.props.column_homogeneous = True
     self.grid.props.row_homogeneous = True
     self.grid.show_all()
-  #TODO: implement add,modify,delete methods and windows for both airport and flights
+
   def adding(self, widget):
-    for i in range(4,8):
-      self.grid.remove_row(4)
+    self.clean_lower_grid()
     if self.context == "Airport Crud":
       self.grid.attach(self.airport_id_label,0,4,1,1)
       self.grid.attach(self.airport_id,1,4,2,1)
@@ -126,12 +125,10 @@ class Crud(Gtk.Window):
       self.grid.attach(self.flight_cost,1,6,2,1)
       self.grid.attach(self.flight_save,0,7,3,1)
     self.grid.show_all()
-    print "passa"
 
   def modify(self, widget):
     #TODO: add a variable that tells you if you're adding modify or del, for the save button
-    for i in range(4,8):
-      self.grid.remove_row(4)
+    self.clean_lower_grid()
     if self.context == "Airport Crud":
       self.grid.attach(self.airport_combo_box,0,4,1,1)
       self.grid.attach(self.airport_mod_name_label,0,5,1,1)
@@ -144,11 +141,9 @@ class Crud(Gtk.Window):
       self.grid.attach(self.flight_save,0,6,3,1)
     self.grid.show_all()
 
-    print "passm"
 
   def delete(self, widget):
-    for i in range(4,8):
-      self.grid.remove_row(4)
+    self.clean_lower_grid()
     if self.context == "Airport Crud":
       self.grid.attach(self.airport_del_combo,0,4,3,1)
       self.grid.attach(self.airport_save,0,6,3,1)
@@ -157,9 +152,6 @@ class Crud(Gtk.Window):
       self.grid.attach(self.flight_combo_box,1,4,2,1)
       self.grid.attach(self.flight_save,0,6,3,1)
     self.grid.show_all()
-    #if self.context == "airport":
-    #  pass
-    print "passd"
 
   def airport_combo_changed(self, combo):
     #TODO: probably save the resulting tuple on a variable toknow what to modify or something.
@@ -222,3 +214,7 @@ class Crud(Gtk.Window):
     else:
         entry = combo.get_child()
         print("Entered: %s" % entry.get_text())
+
+  def clean_lower_grid(self):
+    for i in range(4,8):
+      self.grid.remove_row(4)
