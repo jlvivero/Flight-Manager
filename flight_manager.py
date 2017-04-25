@@ -55,7 +55,7 @@ class welcome_screen(Gtk.Window):
     #win.destroy()
 
   def search(self, widget):
-    search_window = Queries()
+    search_window = Queries(self.air_list, self.fl_list)
     search_window.connect("delete-event", Gtk.main)
     search_window.show_all()
 

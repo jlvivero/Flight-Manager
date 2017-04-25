@@ -3,12 +3,10 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gio
 from gi.repository import Gdk
 from data_struct import Airport, Flight_Str
-#TODO: add a list of airports and flights, but make sure it's shared on all windows, for now it'll be a local variable
-#TODO: fix modify combo boxes on flights, they're putting airports not flights
+
 class Crud(Gtk.Window):
   def __init__(self,context,air_list,fl_list):
     Gtk.Window.__init__(self, title = context)
-    #change this to be global-ish
     self.air_list = air_list
     self.fl_list = fl_list
     self.origin = None
@@ -28,7 +26,6 @@ class Crud(Gtk.Window):
     else:
       self.context = "Flight Crud"
 
-    #TODO: fill the combobox with actual values
     ######################airport stuff#########################################
     #airport add
     self.airport_id_label = Gtk.Label("ID")
