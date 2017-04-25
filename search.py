@@ -29,9 +29,9 @@ class Queries(Gtk.Window):
     self.layover_entry = Gtk.Entry()
 
     self.origin_list = Gtk.ListStore(str,str)
-    self.origin_list = populate_combo2(self.airports)
+    self.origin_list = self.populate_combo2(self.airports)
     self.destination_list = Gtk.ListStore(str,str)
-    self.destination_list = populate_combo2(self.airports)
+    self.destination_list = self.populate_combo2(self.airports)
     self.origin_box = Gtk.ComboBox.new_with_model_and_entry(self.origin_list)
     self.origin_box.connect("changed", self.origin_change)
     self.origin_box.set_entry_text_column(0)
@@ -40,7 +40,7 @@ class Queries(Gtk.Window):
     self.destination_box.set_entry_text_column(0)
 
     self.search_button = Gtk.Button(label = "Query")
-    self.search_button.connect("clicked",start_query)
+    self.search_button.connect("clicked",self.start_query)
     self.result_label = Gtk.Label(" ")
 
     self.grid.attach(self.title,0,0,14,1)
@@ -93,8 +93,8 @@ class Queries(Gtk.Window):
       manager.add_flight(i.origin,i.destination, i.cost)
 
     #TODO: validate that this is an integer
-    layover = int(layover_entry.get_text())
-    if layover >= 0 and <= 3:
+    layover = int(self.layover_entry.get_text())
+    if layover >= 0 and layover <= 3:
       other_flight = manager.query_flight_with_scale(origin_id,destination_id,layover)
     else:
       other_flight = manager.query_flight_any_scale(origin_id,destination_id)
@@ -116,4 +116,6 @@ class Queries(Gtk.Window):
     answer = ""
     for i in flight_object:
       answer = answer + "path: " + str(i.path_list) + "total cost: " + str(i.cost) + "scale number: " + str(i.scale_number) + "\n"
-    self.result_label = Gtk.label(answer)
+    print answer
+    self.result_label = Gtk.Label(answer)
+    #TODO: redraw the grid so that the new label appears
