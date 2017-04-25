@@ -34,17 +34,14 @@ class Crud(Gtk.Window):
 
     #airport delete
     self.airport_list = Gtk.ListStore(str, str)
-    #iin here is where you would append
-    self.airport_list.append(["mxl","test"])
-    self.airport_list.append(["pnm","test2"])
+    self.airport_list = self.populate_combo2(self.air_list)
     self.airport_del_combo = Gtk.ComboBox.new_with_model_and_entry(self.airport_list)
     self.airport_del_combo.connect("changed",self.airport_delete_changed)
     self.airport_del_combo.set_entry_text_column(1)
 
     #aiport modify
     self.airport_mod_list = Gtk.ListStore(str,str)
-    self.airport_mod_list.append(["mxl","test"])
-    self.airport_mod_list.append(["pnm","test2"])
+    self.airport_mod_list = self.populate_combo2(self.air_list)
     self.airport_mod_name_label = Gtk.Label("Name")
     self.airport_mod_name = Gtk.Entry()
     self.airport_combo_box = Gtk.ComboBox.new_with_model_and_entry(self.airport_mod_list)
@@ -57,16 +54,14 @@ class Crud(Gtk.Window):
     #add flights
     self.origin_label = Gtk.Label("Origin")
     self.origin_list = Gtk.ListStore(str, str)
-    self.origin_list.append(["mxl","test"])
-    self.origin_list.append(["pnm","test2"])
+    self.origin_list = self.populate_combo2(self.air_list)
 
     self.flight_cost_label = Gtk.Label("Cost")
     self.flight_cost = Gtk.Entry()
 
     self.destination_label = Gtk.Label("Destination")
     self.destination_list = Gtk.ListStore(str,str)
-    self.destination_list.append(["mxl","test"])
-    self.destination_list.append(["pnm","test2"])
+    self.destination_list = self.populate_combo2(self.air_list)
 
     self.origin_combo_box = Gtk.ComboBox.new_with_model_and_entry(self.origin_list)
     self.origin_combo_box.connect("changed", self.origin_change)
@@ -78,8 +73,7 @@ class Crud(Gtk.Window):
     #delete flight
     self.flight_del_label = Gtk.Label("Flight")
     self.flight_list = Gtk.ListStore(str)
-    self.flight_list.append(["mxl-pnm"])
-    self.flight_list.append(["pnm-mxl"])
+    self.flight_list = self.populate_combo(self.fl_list)
 
     self.flight_combo_box = Gtk.ComboBox.new_with_model_and_entry(self.flight_list)
     self.flight_combo_box.connect("changed", self.flight_change)
@@ -88,8 +82,7 @@ class Crud(Gtk.Window):
 
     #modify flight
     self.mod_flight_list = Gtk.ListStore(str)
-    self.mod_flight_list.append(["mxl-pnm"])
-    self.mod_flight_list.append(["pnm-mxl"])
+    self.mod_flight_list = self.populate_combo(self.fl_list)
     self.mod_flight_combo = Gtk.ComboBox.new_with_model_and_entry(self.mod_flight_list)
     self.mod_flight_combo.connect("changed", self.flight_mod_change)
     self.mod_flight_combo.set_entry_text_column(0)
@@ -228,6 +221,40 @@ class Crud(Gtk.Window):
     for i in range(4,8):
       self.grid.remove_row(4)
 
+  def populate_combo(self, lst):
+    temp = Gtk.ListStore(str)
+    for i in lst:
+      temp.append([i.id])
+    return temp
+
+  def populate_combo2(self, lst):
+    temp = Gtk.ListStore(str,str)
+    for i in lst:
+      temp.append([i.id, i.name])
+    return temp
+
+  def update_boxes(self):
+    self.airport_list = self.populate_combo2(self.air_list)
+    self.airport_mod_list = self.populate_combo2(self.air_list)
+    self.origin_list = self.populate_combo2(self.air_list)
+    self.destination_list = self.populate_combo2(self.air_list)
+    self.flight_list = self.populate_combo(self.fl_list)
+    self.mod_flight_list = self.populate_combo(self.fl_list)
+    
+    self.airport_del_combo = Gtk.ComboBox.new_with_model_and_entry(self.airport_list)
+    self.airport_combo_box = Gtk.ComboBox.new_with_model_and_entry(self.airport_mod_list)
+    self.origin_combo_box = Gtk.ComboBox.new_with_model_and_entry(self.origin_list)
+    self.destination_combo_box = Gtk.ComboBox.new_with_model_and_entry(self.destination_list)
+    self.flight_combo_box = Gtk.ComboBox.new_with_model_and_entry(self.flight_list)
+    self.mod_flight_combo = Gtk.ComboBox.new_with_model_and_entry(self.mod_flight_list)
+
+    self.airport_del_combo.set_entry_text_column(1)
+    self.airport_combo_box.set_entry_text_column(1)
+    self.origin_combo_box.set_entry_text_column(1)
+    self.destination_combo_box.set_entry_text_column(1)
+    self.flight_combo_box.set_entry_text_column(0)
+    self.mod_flight_combo.set_entry_text_column(0)
+
   def save_changes(self,widget):
     if self.context == "Airport Crud":
       self.air_save()
@@ -260,6 +287,7 @@ class Crud(Gtk.Window):
     if not exists:
       self.air_list.append(airport)
     print self.air_list
+    self.update_boxes()
 
   def air_mod(self):
     new_name = self.airport_mod_name.get_text()
@@ -270,6 +298,7 @@ class Crud(Gtk.Window):
       if self.air_list[i].id_exist(fake_val):
         self.air_list[i].change_off_value(new_name)
         break
+    self.update_boxes()
     print self.air_list
 
   def air_del(self):
@@ -280,6 +309,7 @@ class Crud(Gtk.Window):
       if self.air_list[i].id_exist(fake_val):
         del self.air_list[i]
         break
+    self.update_boxes()
     print self.air_list
 
   def flight_add(self):
@@ -295,6 +325,7 @@ class Crud(Gtk.Window):
         exists = True
     if not exists:
       self.fl_list.append(flight)
+    self.update_boxes()
     print self.fl_list
 
   def flight_mod(self):
@@ -306,6 +337,7 @@ class Crud(Gtk.Window):
       if self.ln_list[i].id_exist(fake_flight_id):
         self.ln_list[i].change_off_value(new_cost)
         break
+    self.update_boxes()
     print self.fl_list
 
   def flight_del(self):
@@ -315,4 +347,5 @@ class Crud(Gtk.Window):
       if self.fl_list[i].id_exist(fake_val):
         del self.fl_list[i]
         break
+    self.update_boxes()
     print self.fl_list
