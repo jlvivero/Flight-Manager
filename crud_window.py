@@ -4,12 +4,15 @@ from gi.repository import Gtk, Gio
 from gi.repository import Gdk
 from data_struct import Airport, Flight_Str
 #TODO: add a list of airports and flights, but make sure it's shared on all windows, for now it'll be a local variable
+#TODO: fix modify combo boxes on flights, they're putting airports not flights
 class Crud(Gtk.Window):
   def __init__(self,context,air_list,fl_list):
     Gtk.Window.__init__(self, title = context)
     #change this to be global-ish
     self.air_list = air_list
     self.fl_list = fl_list
+    self.origin = None
+    self.destination = None
     self.delete_value = None
     self.mod_value = None
     self.set_size_request(800,600)
@@ -17,6 +20,7 @@ class Crud(Gtk.Window):
     self.grid = Gtk.Grid()
     self.add(self.grid)
     self.action = -1
+
     #declaration of buttons and texts
     if context == "airprt":
       self.context = "Airport Crud"
@@ -52,6 +56,7 @@ class Crud(Gtk.Window):
     ########################Flight components###################################
     #save button
     self.flight_save = Gtk.Button(label = "Save")
+    self.flight_save.connect("clicked",self.save_changes)
     #add flights
     self.origin_label = Gtk.Label("Origin")
     self.origin_list = Gtk.ListStore(str, str)
@@ -183,6 +188,7 @@ class Crud(Gtk.Window):
     if tree_iter != None:
         model = combo.get_model()
         row_id, name = model[tree_iter][:2]
+        self.destination = (row_id,name)
         print("Selected: ID=%s, name=%s" % (row_id, name))
     else:
         entry = combo.get_child()
@@ -193,6 +199,7 @@ class Crud(Gtk.Window):
     if tree_iter != None:
         model = combo.get_model()
         row_id, name = model[tree_iter][:2]
+        self.origin = (row_id,name)
         print("Selected: ID=%s, name=%s" % (row_id, name))
     else:
         entry = combo.get_child()
@@ -264,7 +271,7 @@ class Crud(Gtk.Window):
     if self.context == "Airport Crud":
       self.air_save()
     else:
-      self.flight_save()
+      self.fl_save()
 
   def air_save(self):
     if self.action == 0:
@@ -273,7 +280,8 @@ class Crud(Gtk.Window):
       self.air_mod()
     else:
       self.air_del()
-  def flight_save(self):
+
+  def fl_save(self):
     if self.action == 0:
       self.flight_add()
     elif self.action == 1:
@@ -317,14 +325,15 @@ class Crud(Gtk.Window):
 
   def flight_add(self):
     #TODO: maybe make a subroutine of this so that you don't repeat yourself with flight/airports
-    fake_val1 = Airport("mxl","mexicali")
-    fake_val2 = Airport("sd", "San Diego")
+    origin = self.origin[0]
+    destination = self.destination[0]
     #TODO: validate that flight cost is a number
     new_cost = int(self.flight_cost.get_text())
-    flight = Flight_Str(fake_val1,fake_val2,100)
-    exist = False
-    for flight in self.fl_list:
-      if flight.exists(flight):
+    flight = Flight_Str(origin,destination,new_cost)
+    print flight.id
+    exists = False
+    for fl in self.fl_list:
+      if fl.exists(flight):
         exists = True
     if not exists:
       self.fl_list.append(flight)

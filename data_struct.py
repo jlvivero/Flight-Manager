@@ -14,7 +14,7 @@ class Airport(object):
 
 class Flight_Str(object):
   def __init__(self,origin,destination,cost):
-    self.id = origin.id + "-" + destination.id
+    self.id = origin + "-" + destination
     self.origin = origin
     self.destination = destination
     self.cost = cost

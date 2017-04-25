@@ -63,7 +63,7 @@ class welcome_screen(Gtk.Window):
     print info_win
     print b
     self.air_list = info_win.air_list
-    self.fl_list = info_win.air_list
+    self.fl_list = info_win.fl_list
     info_win.destroy()
 
 
