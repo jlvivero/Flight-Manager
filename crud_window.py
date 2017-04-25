@@ -331,10 +331,12 @@ class Crud(Gtk.Window):
     #TODO: maybe make a subroutine of this so that you don't repeat yourself with flight/airports
     origin = self.origin[0]
     destination = self.destination[0]
-    #TODO: validate that flight cost is a number
-    new_cost = int(self.flight_cost.get_text())
+    str_cost = self.flight_cost.get_text()
+    if str_cost.isdigit():
+      new_cost = int(self.flight_cost.get_text())
+    else:
+      new_cost = 0
     flight = Flight_Str(origin,destination,new_cost)
-    print flight.id
     exists = False
     for fl in self.fl_list:
       if fl.exists(flight):
@@ -342,11 +344,13 @@ class Crud(Gtk.Window):
     if not exists:
       self.fl_list.append(flight)
     self.update_boxes()
-    print self.fl_list
 
   def flight_mod(self):
-    #TODO: validate that the cost is a number
-    new_cost = int(self.mod_cost.get_text())
+    str_cost = self.mod_cost.get_text()
+    if str_cost.isdigit():
+      new_cost = int(self.mod_cost.get_text())
+    else:
+      new_cost = 0
     ln = len(self.fl_list)
     for i in range(ln):
       if self.fl_list[i].id_exist(self.flight_value):
