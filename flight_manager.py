@@ -15,6 +15,8 @@ class welcome_screen(Gtk.Window):
     self.add(self.grid)
     self.grid.props.column_homogeneous = True
     self.grid.props.row_homogeneous = True
+    self.air_list = []
+    self.fl_list = []
 
     #declaration of buttons and texts
     self.add_airport_button = Gtk.Button(label = "Airports")
@@ -35,14 +37,14 @@ class welcome_screen(Gtk.Window):
 
   def add_airport_clicked(self, widget):
     #self.add_airport_button.props.label = "test"
-    airport_window = Crud("airprt")
-    airport_window.connect("delete-event", Gtk.main)
+    airport_window = Crud("airprt",self.air_list,self.fl_list)
+    airport_window.connect("delete-event", self.return_lists)
     airport_window.show_all()
     #win.destroy()
   def add_flight_clicked(self, widget):
     #self.add_flight_button.props.label = "test"
-    flight_window = Crud("flight")
-    flight_window.connect("delete-event", Gtk.main)
+    flight_window = Crud("flight",self.air_list,self.fl_list)
+    flight_window.connect("delete-event", self.return_lists)
     flight_window.show_all()
     #win.destroy()
 
@@ -56,6 +58,14 @@ class welcome_screen(Gtk.Window):
     search_window = Queries()
     search_window.connect("delete-event", Gtk.main)
     search_window.show_all()
+
+  def return_lists(self,info_win,b):
+    print info_win
+    print b
+    self.air_list = info_win.air_list
+    self.fl_list = info_win.air_list
+    info_win.destroy()
+
 
 win = welcome_screen()
 win.connect("delete-event", Gtk.main_quit)

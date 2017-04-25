@@ -5,11 +5,11 @@ from gi.repository import Gdk
 from data_struct import Airport, Flight_Str
 #TODO: add a list of airports and flights, but make sure it's shared on all windows, for now it'll be a local variable
 class Crud(Gtk.Window):
-  def __init__(self,context):
+  def __init__(self,context,air_list,fl_list):
     Gtk.Window.__init__(self, title = context)
     #change this to be global-ish
-    self.air_list = []
-    self.fl_list = []
+    self.air_list = air_list
+    self.fl_list = fl_list
     self.delete_value = None
     self.mod_value = None
     self.set_size_request(800,600)
