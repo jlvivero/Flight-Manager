@@ -2,14 +2,20 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gio
 from gi.repository import Gdk
-
+from data_struct import Airport
+#TODO: add a list of airports and flights, but make sure it's shared on all windows, for now it'll be a local variable
 class Crud(Gtk.Window):
   def __init__(self,context):
     Gtk.Window.__init__(self, title = context)
+    #change this to be global-ish
+    self.air_list = []
+    self.flight_list = []
+
     self.set_size_request(800,600)
     self.set_border_width(5)
     self.grid = Gtk.Grid()
     self.add(self.grid)
+    self.action = -1
     #declaration of buttons and texts
     if context == "airprt":
       self.context = "Airport Crud"
@@ -23,6 +29,7 @@ class Crud(Gtk.Window):
     self.airport_name_label = Gtk.Label("Name")
     self.airport_id = Gtk.Entry()
     self.airport_save = Gtk.Button(label = "Save")
+    self.airport_save.connect("clicked",self.save_changes)
     self.airport_name = Gtk.Entry()
 
     #airport delete
@@ -109,6 +116,7 @@ class Crud(Gtk.Window):
     self.grid.show_all()
 
   def adding(self, widget):
+    self.action = 0
     self.clean_lower_grid()
     if self.context == "Airport Crud":
       self.grid.attach(self.airport_id_label,0,4,1,1)
@@ -127,7 +135,7 @@ class Crud(Gtk.Window):
     self.grid.show_all()
 
   def modify(self, widget):
-    #TODO: add a variable that tells you if you're adding modify or del, for the save button
+    self.action = 1
     self.clean_lower_grid()
     if self.context == "Airport Crud":
       self.grid.attach(self.airport_combo_box,0,4,1,1)
@@ -143,6 +151,7 @@ class Crud(Gtk.Window):
 
 
   def delete(self, widget):
+    self.action = 2
     self.clean_lower_grid()
     if self.context == "Airport Crud":
       self.grid.attach(self.airport_del_combo,0,4,3,1)
@@ -218,3 +227,64 @@ class Crud(Gtk.Window):
   def clean_lower_grid(self):
     for i in range(4,8):
       self.grid.remove_row(4)
+
+  def save_changes(self,widget):
+    if self.context == "Airport Crud":
+      self.air_save()
+    else:
+      self.flight_save()
+
+  def air_save(self):
+    if self.action == 0:
+      self.air_add()
+    elif self.action == 1:
+      self.air_mod()
+    else:
+      self.air_del()
+  def flight_save(self):
+    if self.action == 0:
+      self.flight_add()
+    elif self.action == 1:
+      self.flight_mod()
+    else:
+      self.flight_del()
+
+  def air_add(self):
+    a_id = self.airport_id.get_text()
+    a_name = self.airport_name.get_text()
+    airport = Airport(a_id,a_name)
+    exists = False
+    for air in self.air_list:
+      if air.exists(airport):
+        exists = True
+    if not exists:
+      self.air_list.append(airport)
+    print self.air_list
+
+  def air_mod(self):
+    new_name = self.airport_mod_name.get_text()
+    fake_val = "mxl"
+    ln = len(self.air_list)
+    for i in range(ln):
+      if self.air_list[i].id_exist(fake_val):
+        self.air_list[i].change_name(new_name)
+        break
+    print self.air_list
+
+  def air_del(self):
+    fake_val = "mxl"
+    ln = len(self.air_list)
+    for i in range(ln):
+      if self.air_list[i].id_exist(fake_val):
+        del self.air_list[i]
+        break
+    print self.air_list
+
+  def flight_add(self):
+    pass
+
+  def flight_mod(self):
+    pass
+
+  def flight_del(self):
+    pass
