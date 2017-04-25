@@ -1,0 +1,15 @@
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk, Gio
+from gi.repository import Gdk
+from vuelos2 import Prolog_manager
+
+class Queries(Gtk.Window):
+  def __init__(self):
+    Gtk.Window.__init__(self, title = "welcome_screen")
+    self.set_size_request(800,600)
+    self.set_border_width(5)
+    self.grid = Gtk.Grid()
+    self.add(self.grid)
+    self.grid.props.column_homogeneous = True
+    self.grid.props.row_homogeneous = True
