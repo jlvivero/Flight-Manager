@@ -2,14 +2,14 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gio
 from gi.repository import Gdk
-from data_struct import Airport
+from data_struct import Airport, Flight_Str
 #TODO: add a list of airports and flights, but make sure it's shared on all windows, for now it'll be a local variable
 class Crud(Gtk.Window):
   def __init__(self,context):
     Gtk.Window.__init__(self, title = context)
     #change this to be global-ish
     self.air_list = []
-    self.flight_list = []
+    self.fl_list = []
 
     self.set_size_request(800,600)
     self.set_border_width(5)
@@ -22,7 +22,7 @@ class Crud(Gtk.Window):
     else:
       self.context = "Flight Crud"
 
-    #TODO: fill lists with actual values
+    #TODO: fill the combobox with actual values
     ######################airport stuff#########################################
     #airport add
     self.airport_id_label = Gtk.Label("ID")
@@ -263,15 +263,17 @@ class Crud(Gtk.Window):
 
   def air_mod(self):
     new_name = self.airport_mod_name.get_text()
+    #TODO: change fake val to the actual value chosen from the combobox
     fake_val = "mxl"
     ln = len(self.air_list)
     for i in range(ln):
       if self.air_list[i].id_exist(fake_val):
-        self.air_list[i].change_name(new_name)
+        self.air_list[i].change_off_value(new_name)
         break
     print self.air_list
 
   def air_del(self):
+    #TODO: change fake val to the actual value chosen from the combobox
     fake_val = "mxl"
     ln = len(self.air_list)
     for i in range(ln):
@@ -281,10 +283,36 @@ class Crud(Gtk.Window):
     print self.air_list
 
   def flight_add(self):
-    pass
+    #TODO: maybe make a subroutine of this so that you don't repeat yourself with flight/airports
+    fake_val1 = Airport("mxl","mexicali")
+    fake_val2 = Airport("sd", "San Diego")
+    #TODO: validate that flight cost is a number
+    new_cost = int(self.flight_cost.get_text())
+    flight = Flight_Str(fake_val1,fake_val2,100)
+    exist = False
+    for flight in self.fl_list:
+      if flight.exists(flight):
+        exists = True
+    if not exists:
+      self.fl_list.append(flight)
+    print self.fl_list
 
   def flight_mod(self):
-    pass
+    fake_flight_id = "mxl-sd"
+    #TODO: validate that the cost is a number
+    new_cost = int(self.mod_cost.get_text())
+    ln = len(self.fl_list)
+    for i in range(ln):
+      if self.ln_list[i].id_exist(fake_flight_id):
+        self.ln_list[i].change_off_value(new_cost)
+        break
+    print self.fl_list
 
   def flight_del(self):
-    pass
+    fake_val = "mxl-sd"
+    ln = len(self.fl_list)
+    for i in range(ln):
+      if self.fl_list[i].id_exist(fake_val):
+        del self.fl_list[i]
+        break
+    print self.fl_list
