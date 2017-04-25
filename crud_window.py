@@ -10,7 +10,8 @@ class Crud(Gtk.Window):
     #change this to be global-ish
     self.air_list = []
     self.fl_list = []
-
+    self.delete_value = None
+    self.mod_value = None
     self.set_size_request(800,600)
     self.set_border_width(5)
     self.grid = Gtk.Grid()
@@ -156,23 +157,23 @@ class Crud(Gtk.Window):
     self.grid.show_all()
 
   def airport_combo_changed(self, combo):
-    #TODO: probably save the resulting tuple on a variable toknow what to modify or something.
     tree_iter = combo.get_active_iter()
     if tree_iter != None:
         model = combo.get_model()
         row_id, name = model[tree_iter][:2]
         print("Selected: ID=%s, name=%s" % (row_id, name))
+        self.mod_value = (row_id,name)
     else:
         entry = combo.get_child()
         print("Entered: %s" % entry.get_text())
 
   def airport_delete_changed(self, combo):
-    #TODO: probably save the resulting tuple on a variable toknow what to modify or something.
     tree_iter = combo.get_active_iter()
     if tree_iter != None:
         model = combo.get_model()
         row_id, name = model[tree_iter][:2]
         print("Selected: ID=%s, name=%s" % (row_id, name))
+        self.delete_value = (row_id,name)
     else:
         entry = combo.get_child()
         print("Entered: %s" % entry.get_text())
@@ -240,14 +241,18 @@ class Crud(Gtk.Window):
     self.destination_list = self.populate_combo2(self.air_list)
     self.flight_list = self.populate_combo(self.fl_list)
     self.mod_flight_list = self.populate_combo(self.fl_list)
-    
     self.airport_del_combo = Gtk.ComboBox.new_with_model_and_entry(self.airport_list)
     self.airport_combo_box = Gtk.ComboBox.new_with_model_and_entry(self.airport_mod_list)
     self.origin_combo_box = Gtk.ComboBox.new_with_model_and_entry(self.origin_list)
     self.destination_combo_box = Gtk.ComboBox.new_with_model_and_entry(self.destination_list)
     self.flight_combo_box = Gtk.ComboBox.new_with_model_and_entry(self.flight_list)
     self.mod_flight_combo = Gtk.ComboBox.new_with_model_and_entry(self.mod_flight_list)
-
+    self.airport_del_combo.connect("changed",self.airport_delete_changed)
+    self.airport_combo_box.connect("changed",self.airport_combo_changed)
+    self.origin_combo_box.connect("changed", self.origin_change)
+    self.destination_combo_box.connect("changed", self.destination_change)
+    self.flight_combo_box.connect("changed", self.flight_change)
+    self.mod_flight_combo.connect("changed", self.flight_mod_change)
     self.airport_del_combo.set_entry_text_column(1)
     self.airport_combo_box.set_entry_text_column(1)
     self.origin_combo_box.set_entry_text_column(1)
@@ -291,22 +296,20 @@ class Crud(Gtk.Window):
 
   def air_mod(self):
     new_name = self.airport_mod_name.get_text()
-    #TODO: change fake val to the actual value chosen from the combobox
-    fake_val = "mxl"
+    mod_value = self.mod_value[0]
     ln = len(self.air_list)
     for i in range(ln):
-      if self.air_list[i].id_exist(fake_val):
+      if self.air_list[i].id_exist(mod_value):
         self.air_list[i].change_off_value(new_name)
         break
     self.update_boxes()
     print self.air_list
 
   def air_del(self):
-    #TODO: change fake val to the actual value chosen from the combobox
-    fake_val = "mxl"
+    del_value = self.delete_value[0]
     ln = len(self.air_list)
     for i in range(ln):
-      if self.air_list[i].id_exist(fake_val):
+      if self.air_list[i].id_exist(del_value):
         del self.air_list[i]
         break
     self.update_boxes()
