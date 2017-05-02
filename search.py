@@ -118,11 +118,10 @@ class Queries(Gtk.Window):
     print "omg"
     answer = ""
     for i in flight_object:
-      answer = answer + "path: " + str(i.path_list) + "total cost: " + str(i.cost) + "scale number: " + str(i.scale_number) + "\n"
+      answer = answer + "path: " + str(i.path_list) + "\t total cost: " + str(i.cost) + "\tscale number: " + str(i.scale_number) + "\n"
     print answer
     self.result_label = Gtk.Label(answer)
     for i in range(7,12):
       self.grid.remove_row(7)
     self.grid.attach(self.result_label,0,7,13,5)
     self.grid.show_all()
-    #TODO: redraw the grid so that the new label appears
